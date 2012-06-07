@@ -1,15 +1,32 @@
-package dk.mmba.util.builder.vaadin
+/*
+ * Copyright 2011-2012 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package vaadin.builder
 
 import com.vaadin.terminal.Sizeable
 import groovy.swing.factory.BeanFactory
-import java.awt.GridLayout
 import org.codehaus.groovy.runtime.InvokerHelper
+
+import java.awt.GridLayout
+
 import com.vaadin.ui.*
-import dk.mmba.util.builder.vaadin.factory.*
+import vaadin.builder.factory.*
 
 /**
- *
- * @author Artem Nikolaienko
+ * @author <a href="mailto:art@inet.ua">Artem Nikolaienko</a>
  */
 class VaadinBuilder extends FactoryBuilderSupport {
 
@@ -18,6 +35,7 @@ class VaadinBuilder extends FactoryBuilderSupport {
     }
 
     protected void registerFactories() {
+        registerFactory("window", new WindowFactory())
         registerFactory("panel", new PanelFactory())
 
         registerFactory("gridLayout", new AlignmentLayoutFactory(GridLayout))
@@ -32,18 +50,21 @@ class VaadinBuilder extends FactoryBuilderSupport {
         registerFactory("tabSheet", new ComponentContainerFactory(TabSheet))
         registerFactory("accordion", new ComponentContainerFactory(Accordion))
 
+
         registerFactory("label", new BeanFactory(Label))
         registerFactory("button", new BeanFactory(Button))
         registerFactory("comboBox", new BeanFactory(ComboBox))
         registerFactory("checkBox", new BeanFactory(CheckBox))
-        registerFactory("widget", new WidgetFactory(Component))
+        registerFactory("loginForm", new BeanFactory(LoginForm))
+        registerFactory("textField", new BeanFactory(TextField))
 
+        registerFactory("widget", new WidgetFactory(Component))
     }
 
     protected void setNodeAttributes(Object node, Map attributes) {
-        for (Map.Entry entry: (Set<Map.Entry>) attributes.entrySet()) {
-            String property = entry.getKey().toString();
-            Object value = entry.getValue();
+        for (Map.Entry entry : (Set<Map.Entry>) attributes.entrySet()) {
+            String property = entry.key.toString();
+            Object value = entry.value;
 
             //TODO:Think how to find a better workaround
             // b/c Vaadin don't follow JavaBeans conventions for some properties
